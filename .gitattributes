@@ -1,0 +1,6 @@
+﻿# Normalize text files in the repository.
+* text=auto eol=lf
+
+# Windows-native script files.
+*.bat text eol=crlf
+*.cmd text eol=crlf
