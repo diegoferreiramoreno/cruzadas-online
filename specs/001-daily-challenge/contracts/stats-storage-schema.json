@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PlayerStatsStorage",
+  "description": "Schema das estatísticas agregadas locais persistidas em localStorage (cruzadas_stats_v1)",
+  "type": "object",
+  "required": [
+    "version",
+    "gamesPlayed",
+    "gamesWon",
+    "currentStreak",
+    "maxStreak",
+    "guessDistribution",
+    "lastCompletedCycleId",
+    "completedCycleIds",
+    "cohortCycleId",
+    "reportedMilestones"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "gamesPlayed": { "type": "integer", "minimum": 0 },
+    "gamesWon": { "type": "integer", "minimum": 0 },
+    "currentStreak": { "type": "integer", "minimum": 0 },
+    "maxStreak": { "type": "integer", "minimum": 0 },
+    "lastCompletedCycleId": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "completedCycleIds": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+      },
+      "description": "Lista única e ordenada de ciclos de origem concluídos com sucesso ou término de tentativas"
+    },
+    "cohortCycleId": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "originCycleId da primeira partida concluída no dispositivo, base para coortes D1/D7/D14"
+    },
+    "reportedMilestones": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["D1", "D7", "D14"] },
+      "description": "Marcos de retenção já emitidos por este dispositivo para evitar duplicidade de telemetria"
+    },
+    "guessDistribution": {
+      "type": "object",
+      "required": ["1", "2", "3", "4", "5", "6"],
+      "properties": {
+        "1": { "type": "integer", "minimum": 0 },
+        "2": { "type": "integer", "minimum": 0 },
+        "3": { "type": "integer", "minimum": 0 },
+        "4": { "type": "integer", "minimum": 0 },
+        "5": { "type": "integer", "minimum": 0 },
+        "6": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

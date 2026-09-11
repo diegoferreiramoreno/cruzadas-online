@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "GameSessionStorage",
+  "description": "Schema do objeto de sessão de jogo persistido em localStorage (cruzadas_session_v1)",
+  "type": "object",
+  "required": [
+    "version",
+    "originCycleId",
+    "wordLength",
+    "guesses",
+    "status",
+    "startedAt",
+    "completedAt",
+    "lastActivityAt"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "originCycleId": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Identificador do ciclo diário de origem da partida (YYYY-MM-DD)"
+    },
+    "wordLength": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Quantidade de letras da palavra do desafio desta sessão"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["IN_PROGRESS", "WON", "LOST"]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "completedAt": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "lastActivityAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "guesses": {
+      "type": "array",
+      "maxItems": 6,
+      "items": {
+        "type": "object",
+        "required": ["attemptIndex", "rawInput", "normalizedInput", "evaluations", "submittedAt"],
+        "properties": {
+          "attemptIndex": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 5
+          },
+          "rawInput": { "type": "string", "minLength": 1 },
+          "normalizedInput": { "type": "string", "minLength": 1, "pattern": "^[A-Z]+$" },
+          "submittedAt": { "type": "string", "format": "date-time" },
+          "evaluations": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "required": ["letter", "status"],
+              "properties": {
+                "letter": { "type": "string", "maxLength": 1, "pattern": "^[A-Z]$" },
+                "status": { "type": "string", "enum": ["correct", "present", "absent"] }
+              },
+              "additionalProperties": false
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

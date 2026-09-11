@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DailyChallenge",
+  "description": "Schema de validação para os desafios diários editoriais do Cruzadas.online (Shape 1)",
+  "type": "object",
+  "required": [
+    "id",
+    "cycleDate",
+    "word",
+    "normalizedWord",
+    "wordLength",
+    "initialClue",
+    "postGameContext",
+    "sourceCitation",
+    "sourceCategory",
+    "editorialStatus"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^cruzadas-[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Identificador único estável do desafio"
+    },
+    "cycleDate": {
+      "type": "string",
+      "format": "date",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$",
+      "description": "Data civil oficial de referência no Horário de Brasília (YYYY-MM-DD)"
+    },
+    "word": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Termo canônico editorial completo com grafia e acentuação correta"
+    },
+    "normalizedWord": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Z]+$",
+      "description": "Termo em maiúsculas sem diacríticos (A-Z) para resolução pelo motor"
+    },
+    "wordLength": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Quantidade de letras da palavra secreta (invariante: deve ser exatamente igual a normalizedWord.length, verificado por validate-challenges.ts)"
+    },
+    "initialClue": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Pista temática inicial para o jogador sem revelar letras"
+    },
+    "postGameContext": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Nota de contextualização formativa exibida na tela pós-jogo"
+    },
+    "sourceCitation": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Citação de fonte adequada, verificável e rastreável segundo a natureza da afirmação"
+    },
+    "sourceCategory": {
+      "type": "string",
+      "enum": [
+        "Sagrada Escritura",
+        "Magistério e Documentos Conciliares",
+        "Catecismo da Igreja Católica",
+        "Patrística e Doutores da Igreja",
+        "Liturgia Oficial e Calendário Geral",
+        "História Eclesiástica Documentada",
+        "Tradição e Devoção Popular",
+        "Opiniões ou Hipóteses Teológicas"
+      ],
+      "description": "Categoria formal de fonte documental conforme o Princípio IX da Constituição"
+    },
+    "editorialStatus": {
+      "type": "string",
+      "enum": ["Draft", "Verified", "Published"],
+      "description": "Estado na esteira editorial de governança"
+    }
+  },
+  "additionalProperties": false
+}
