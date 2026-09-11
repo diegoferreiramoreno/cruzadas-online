@@ -8,6 +8,16 @@
 
 **Input**: User description: "Shape 1 — Desafio Diário Web-First: Experimento de validação com gameplay aberto sem conta obrigatória, enigma periódico de palavras/letras com temática cultural/católica, contextualização pós-jogo com fontes adequadas à natureza da afirmação, persistência de estado local, compartilhamento sem spoilers e telemetria comportamental mínima para validação de hipóteses de produto sob apetite Small e estratégia Build to Learn."
 
+## Clarifications
+
+### Session 2026-09-10
+- Q: Qual modelo canônico de mecânica de jogo deve reger a resolução do enigma diário de palavras no Cruzadas.online? (FR-007) → A: Option A — Adivinhação em 6 tentativas com pista temática inicial e feedback de letras (posição correta, posição incorreta, ausente); normalização de acentos e cedilha na digitação; vitória ao acertar o termo e encerramento por esgotamento das 6 tentativas.
+- Q: Como deve ser definida a fronteira temporal do ciclo diário, o horário de virada oficial e a política de sessão e replay no Cruzadas.online? (FR-013) → A: Option A — Fuso de Brasília (00:00 UTC-3) como referência nacional unificada; conclusão graciosa de partidas ativas durante a virada; bloqueio de rejogabilidade no mesmo ciclo para preservar integridade dos dados, mantendo acessível a tela pós-jogo para consulta e compartilhamento.
+- Q: Quais regras funcionais devem reger o cômputo, a manutenção e a quebra da sequência de dias consecutivos jogados (streak) no Cruzadas.online? (FR-015) → A: Option A — Conclusão efetiva da partida no ciclo diário (vitória ou derrota válida) contabiliza o dia para a sequência; ausência de conclusão em um dia civil oficial (00:00 UTC-3) zera a sequência atual (current streak) preservando a maior sequência histórica (max streak); indicador pessoal leve operando localmente no dispositivo sem punições artificiais ou dark patterns.
+- Q: Como o sistema deve avaliar o cômputo de letras repetidas, a equivalência ortográfica na digitação e o escopo de vocabulário aceito no enigma diário? (FR-006, FR-007, FR-008) → A: Option A — Cômputo posicional estrito com prioridade para posições exatas e marcação de excedentes como ausentes (ex.: palavra secreta MARIA e tentativa ARARA: o 'A' na 5ª posição é correto por posição exata, o 'A' na 1ª posição é presente em outra posição, e o 'A' excedente na 3ª posição é ausente, demonstrando que cada ocorrência na palavra secreta satisfaz no máximo uma ocorrência na tentativa); normalização funcional transparente de acentos/cedilha na digitação (ACAO = AÇÃO) preservando a grafia editorial canônica na revelação; vocabulário de termos únicos sem espaço/hífen aceitando léxico comum em português e nomes próprios católicos/bíblicos relevantes (MARIA, PEDRO, JESUS, BENTO).
+- Q: A qual ciclo deve ser atribuída a conclusão de uma partida iniciada antes da meia-noite e finalizada após a virada, e como tratar sessões mantidas abertas por múltiplos dias? (FR-013, FR-014, FR-015) → A: Option A para todos os usuários do MVP — A conclusão pertence sempre ao ciclo do desafio que foi iniciado (ex.: partida iniciada às 23:58 do Dia A e concluída às 00:03 do Dia B pontua para o Dia A), liberando em seguida o novo desafio do Dia B para jogo e cômputo sem contagem dupla. Para sessões mantidas abertas por múltiplos dias (ex.: iniciada no Dia 10 e concluída no Dia 12), a conclusão pontua exclusivamente para o Dia 10 (não recupera o Dia 11 e não pontua para o Dia 12; streak atual zera conforme FR-015). Sem timeouts arbitrários ou descarte punitivo no cliente.
+  - *Nota de Governança*: `[FUTURE PRODUCT POLICY / STAKEHOLDER DECISION]` Decisão deliberada do Product Owner: a regra da Opção A regerá o free tier permanente e futuros planos pagos da plataforma; a aplicação de descarte de sessão (Opção C) fica reservada para eventual governança de outras modalidades ou planos futuros não contemplados nessas condições, sem impacto ou ramificações condicionais de planos no MVP.
+
 ---
 
 ## User Scenarios & Testing *(mandatory)*
@@ -32,20 +42,20 @@ Como adulto interessado em passatempos de palavras e cultura católica, quero ac
    - **When** o usuário observa a interface,
    - **Then** as instruções fundamentais do jogo, a área de inserção de tentativas e os controles de entrada suportados pelo dispositivo estão visíveis e operáveis com clareza e contraste adequado.
 
-3. **Submissão de Tentativa e Feedback Acessível**:
-   - **Given** que o usuário submete uma tentativa de termo conforme os critérios de entrada aceitos,
-   - **When** o sistema avalia a tentativa submetida,
-   - **Then** o sistema fornece feedback acessível e compreensível para orientar o jogador a cada tentativa submetida (conforme as regras da mecânica a serem definidas no Clarify), sem depender exclusivamente da percepção de cores para transmitir distinções funcionais.
+3. **Submissão de Tentativa, Normalização e Feedback de Posição**:
+   - **Given** que o usuário observa a pista temática inicial e submete uma tentativa de termo conforme a quantidade esperada de letras,
+   - **When** o sistema avalia a tentativa submetida contra o vocabulário aceito (que inclui palavras comuns e nomes próprios bíblicos/católicos sem espaço ou hífen),
+   - **Then** a digitação é aceita com equivalência ortográfica transparente (á, à, â, ã → a; é, ê → e; í → i; ó, ô, õ → o; ú → u; ç → c, de modo que 'ACAO' é aceito e avaliado como 'AÇÃO'), e o sistema fornece feedback imediato por letra aplicando prioridade posicional estrita para letras repetidas (correspondências na posição correta consomem primeiro as ocorrências da palavra secreta, e letras excedentes recebem status de ausente, ex.: se a palavra secreta for MARIA e a tentativa for ARARA, o 'A' na 5ª posição é marcado como correto, o 'A' na 1ª posição é marcado como presente em outra posição, e o 'A' excedente na 3ª posição é marcado como ausente, garantindo que nenhuma ocorrência da palavra secreta seja reutilizada mais de uma vez), utilizando distinções visuais e semânticas que não dependem exclusivamente de cores.
 
-4. **Conclusão com Sucesso e Exibição Editorial**:
-   - **Given** que o jogador atingiu a condição de vitória do enigma,
-   - **When** a condição de sucesso é processada,
-   - **Then** o estado do jogo é atualizado e o sistema apresenta a tela de encerramento contendo: (a) mensagem de conclusão positiva; (b) o termo correto confirmado; (c) uma breve contextualização formativa sobre o santo, passagem bíblica, festa litúrgica ou fato histórico associado; e (d) a citação da fonte documental adequada à natureza da afirmação (e fonte de autoridade eclesial se de natureza doutrinária ou bíblica).
+4. **Conclusão com Vitória e Exibição Editorial**:
+   - **Given** que o jogador acertou a palavra secreta em qualquer uma das até 6 tentativas permitidas,
+   - **When** a tentativa correta é processada,
+   - **Then** o estado do jogo é atualizado para vitória e o sistema apresenta a tela de encerramento contendo: (a) mensagem de congratulações com o número de tentativas utilizadas; (b) o termo correto confirmado; (c) a contextualização formativa sobre o santo, passagem bíblica, festa litúrgica ou fato histórico associado; e (d) a citação da fonte documental adequada à natureza da afirmação (e fonte de autoridade eclesial se de natureza doutrinária ou bíblica).
 
-5. **Conclusão sem Sucesso**:
-   - **Given** que o jogador atingiu a condição de encerramento da partida sem acertar o termo,
-   - **When** o encerramento é processado,
-   - **Then** o jogo é finalizado com tom respeitoso e acolhedor, o termo correto é revelado, e a mesma contextualização formativa e citação de fonte documental são disponibilizadas para leitura.
+5. **Conclusão por Esgotamento das Tentativas**:
+   - **Given** que o jogador utilizou todas as 6 tentativas permitidas sem acertar o termo secreto,
+   - **When** a sexta tentativa incorreta é processada,
+   - **Then** a partida é finalizada com tom respeitoso e acolhedor, o termo correto é revelado, e a mesma contextualização formativa e citação de fonte documental são disponibilizadas para leitura.
 
 ---
 
@@ -64,20 +74,20 @@ Como jogador habitual, quero que o meu dispositivo memorize o resultado do desaf
    - **When** o usuário recarrega a página ou fecha e reabre o navegador no mesmo navegador/dispositivo,
    - **Then** o sistema recupera o estado correspondente daquele ciclo, sem reiniciar inadvertidamente o desafio do zero.
 
-2. **Reconhecimento do Desafio do Ciclo**:
+2. **Reconhecimento do Desafio do Ciclo e Bloqueio de Replay**:
    - **Given** que o jogador concluiu o desafio do ciclo ativo,
-   - **When** o jogador retorna à aplicação dentro do mesmo ciclo periódico,
-   - **Then** a interface apresenta o resultado e o conteúdo formativo, indicando o status daquele desafio e orientando sobre o próximo ciclo (conforme regras de replay e transição a serem calibradas no Clarify).
+   - **When** o jogador retorna à aplicação dentro do mesmo ciclo periódico (antes da meia-noite UTC-3),
+   - **Then** a interface apresenta a tela pós-jogo com o resultado obtido, a nota de contextualização formativa e a citação documental, bloqueando novo jogo no mesmo dia para manter a fidelidade das estatísticas e dos sinais analíticos.
 
-3. **Transição de Ciclo Periódico e Atualização de Sequência**:
-   - **Given** que um novo ciclo periódico se iniciou conforme a referência temporal oficial,
-   - **When** o jogador acessa a aplicação no novo ciclo,
-   - **Then** o novo enigma do ciclo é disponibilizado e o indicador pessoal de sequência de dias (*streak*) é atualizado conforme as regras canônicas de manutenção e quebra a serem definidas.
+3. **Transição de Ciclo Periódico (00:00 UTC-3) e Atribuição Temporal**:
+   - **Given** que a virada de ciclo ocorre à meia-noite (00:00:00) pelo Horário de Brasília (UTC-3),
+   - **When** uma partida iniciada antes da meia-noite (ex.: Dia A às 23:58) é concluída após a virada (ex.: Dia B às 00:03),
+   - **Then** a conclusão é atribuída exclusivamente ao ciclo do desafio que foi iniciado (Dia A), pontuando a constância daquele dia no streak; em seguida, o novo desafio do ciclo corrente (Dia B) é disponibilizado para jogo e cômputo sem duplicidade de pontuação; caso uma sessão tenha sido iniciada em data anterior e permaneça aberta por múltiplos dias (ex.: iniciada no Dia 10 e finalizada no Dia 12), a partida pode ser concluída normalmente para fins formativos e recreativos, pontuando unicamente para o Dia 10, sem recuperar os dias intermediários não jogados (Dia 11) e sem computar para o Dia 12 (com o streak atual zerado pela ausência de conclusão no Dia 11).
 
 4. **Retenção de Indicadores Pessoais Básicos**:
    - **Given** que o jogador já realizou partidas em ciclos anteriores no mesmo dispositivo,
-   - **When** o jogador visualiza a tela pós-jogo ou a área de indicadores,
-   - **Then** são exibidos indicadores pessoais agregados simples (ex.: desafios jogados, taxa de sucesso e sequência de dias).
+   - **When** o jogador visualiza a tela pós-jogo ou o painel de estatísticas locais,
+   - **Then** são exibidos indicadores pessoais agregados simples (total de partidas jogadas, percentual de acerto, distribuição de vitórias, sequência atual e sequência recorde), de forma leve e acolhedora sem técnicas de coerção (*dark patterns*).
 
 ---
 
@@ -138,10 +148,11 @@ Como usuário interessado na proposta do Cruzadas.online, quero ter a oportunida
 ### Edge Cases
 
 - **Perda ou Intermitência de Conectividade**: Se houver falha de rede durante o uso, a aplicação deve apresentar feedback seguro e compreensível ao usuário, sem falhas silenciosas ou comportamentos destrutivos de estado; suporte a funcionamento offline integral NÃO é requisito deste experimento.
-- **Mudança de Fuso Horário ou Relógio do Dispositivo**: Se o relógio local do usuário for alterado ou o usuário alternar de fuso durante o uso, o sistema deve assegurar a integridade do estado local conforme a referência temporal oficial do ciclo a ser calibrada no Clarify.
-- **Sessão Aberta Durante a Virada do Ciclo**: O tratamento de uma partida aberta no navegador no instante exato da transição de ciclo diário deve ser definido na etapa de Clarify, priorizando evitar perdas abruptas de dados em andamento sem aviso ao jogador.
+- **Mudança de Fuso Horário ou Relógio do Dispositivo**: A determinação do desafio do dia apoia-se na data de referência oficial (Horário de Brasília UTC-3), assegurando a integridade do ciclo mesmo se o relógio local do dispositivo do usuário for alterado, impedindo desbloqueio de desafios futuros.
+- **Sessão Aberta Durante a Virada do Ciclo ou Prolongada por Múltiplos Dias**: Se o usuário mantiver a aba do navegador aberta durante a virada da meia-noite (00:00:00 UTC-3), a partida em andamento pode ser concluída normalmente e é atribuída ao ciclo do dia em que foi iniciada (ex.: iniciada às 23:58 do Dia A e finalizada às 00:03 do Dia B pontua para o Dia A), liberando em seguida o novo desafio do Dia B para jogo e cômputo sem duplicidade. Se a sessão permanecer aberta ou pausada por múltiplos dias (ex.: iniciada no Dia 10 e retomada no Dia 12), o usuário pode concluí-la com atribuição exclusiva ao Dia 10; os dias intermediários não jogados (Dia 11) não são recuperados, o Dia 12 não é pontuado por esta partida e o streak atual é zerado de acordo com FR-015, sem aplicação de timeouts arbitrários ou descarte punitivo no cliente.
 - **Limpeza de Dados Locais / Navegação Privada**: Se o usuário jogar em janela anônima ou limpar os dados locais do navegador, o sistema deve iniciar um novo estado local limpo sem quebrar a aplicação.
-- **Entradas Incompletas ou Inválidas**: Tentativas que não cumpram os critérios formais de entrada devem ser sinalizadas com feedback claro sem debitar tentativas do jogador.
+- **Entradas Incompletas, Hifenizadas ou Inválidas**: Tentativas que contenham espaços, hífens, caracteres numéricos, tamanho incorreto ou que não pertençam ao vocabulário aceito de termos em português / nomes católicos devem ser sinalizadas com feedback claro e sutil, sem debitar nenhuma tentativa do jogador.
+- **Tentativas com Letras Repetidas em Excesso**: Se o jogador submeter uma tentativa com múltiplas ocorrências de uma mesma letra que só aparece uma vez na palavra secreta, as posições não coincidentes são marcadas estritamente como 'ausentes' após consumir a ocorrência devida, evitando que o jogador interprete erroneamente que a letra existe em duplicidade.
 
 ---
 
@@ -156,11 +167,11 @@ Como usuário interessado na proposta do Cruzadas.online, quero ter a oportunida
 
 #### Mecânica de Jogo e Interface
 - **FR-004**: O sistema DEVE apresentar exatamente um único desafio ativo por ciclo periódico.
-- **FR-005**: O sistema DEVE fornecer área estruturada para a inserção de tentativas de adivinhação, suportando os métodos de entrada de texto cabíveis no dispositivo utilizado pelo jogador.
-- **FR-006**: O sistema DEVE validar se a tentativa submetida atende aos critérios formais de entrada e ao vocabulário aceito antes de considerá-la processada no jogo.
-- **FR-007**: [NEEDS CLARIFICATION: Core Game Mechanics — Definir as regras canônicas da mecânica de adivinhação do enigma, incluindo: (a) estrutura da tentativa; (b) tamanho fixo ou variável do termo; (c) número/limite de tentativas se aplicável; (d) condições de vitória e derrota; (e) modelo de feedback ao jogador; (f) tratamento de letras repetidas; (g) política de pistas progressivas; (h) vocabulário aceito e normalização de acentos/cedilha].
-- **FR-008**: O sistema DEVE fornecer feedback acessível e compreensível para orientar o jogador a cada tentativa submetida conforme a mecânica a ser clarificada, garantindo que a distinção de status não dependa exclusivamente de cores.
-- **FR-009**: O sistema DEVE detectar automaticamente a ocorrência das condições de vitória ou encerramento da partida conforme as regras canônicas da mecânica definidas após a clarificação.
+- **FR-005**: O sistema DEVE fornecer área estruturada para inserção de tentativas de termos com o número de letras determinado para o desafio do ciclo, suportando teclado físico e teclado em tela.
+- **FR-006**: O sistema DEVE validar se a tentativa submetida possui a quantidade esperada de letras para o desafio ativo e pertence a um vocabulário aceito de palavras em português (composto por termos do léxico comum e nomes próprios de relevância católica, bíblica e histórica, como MARIA, PEDRO, JESUS ou BENTO), sem aceitar termos com espaços, hífens, siglas ou palavras estrangeiras não aportuguesadas.
+- **FR-007**: A mecânica canônica opera sob adivinhação de termo único em até 6 tentativas, exibindo uma pista temática contextual inicial (cultural/litúrgica) para orientar o jogador sem revelar letras; a digitação no teclado opera com equivalência funcional normalizada A-Z, aceitando caracteres básicos sem acentos ou cedilha como correspondentes válidos às letras canônicas acentuadas (ex.: submeter 'ACAO' é funcionalmente equivalente e validado como 'AÇÃO'), preservando-se a grafia correta e acentuada na exibição editorial pós-jogo.
+- **FR-008**: O sistema DEVE fornecer feedback imediato para cada letra da tentativa submetida (posição correta, presente em outra posição, ou ausente), garantindo que distinções funcionais utilizem formas/símbolos além de cores e aplicando a regra canônica de cômputo posicional para letras repetidas: (a) correspondências na posição exata são computadas e consumidas primeiro; (b) ocorrências adicionais na tentativa recebem o status de 'presente' apenas até o limite de repetições ainda disponíveis na palavra secreta; (c) ocorrências excedentes da mesma letra recebem o status de 'ausente' (ex.: se a palavra secreta for MARIA e a tentativa for ARARA, o 'A' na 5ª posição é correto por posição exata, o 'A' na 1ª posição é presente em outra posição, e o 'A' excedente na 3ª posição é ausente, demonstrando que cada ocorrência da letra na palavra secreta satisfaz no máximo uma ocorrência na tentativa).
+- **FR-009**: O sistema DEVE detectar automaticamente o encerramento da partida por vitória (acerto do termo em qualquer uma das 6 tentativas) ou por encerramento sem vitória (esgotamento das 6 tentativas permitidas).
 
 #### Rigor Editorial e Rastreabilidade de Fontes
 - **FR-010**: Ao término da partida, o sistema DEVE apresentar o termo correto acompanhado de nota de contextualização formativa e citação explícita de fonte adequada, verificável e rastreável segundo a natureza da afirmação.
@@ -168,10 +179,11 @@ Como usuário interessado na proposta do Cruzadas.online, quero ter a oportunida
 - **FR-012**: É terminantemente PROIBIDA a exibição de conteúdos com direitos autorais patrimoniais violados, devendo todo desafio apoiar-se em redação autoral própria, fatos históricos, obras em domínio público ou citações nos limites legais (Art. 46 da Lei nº 9.610/1998).
 
 #### Ciclo Periódico e Persistência Local
-- **FR-013**: [NEEDS CLARIFICATION: Daily Cycle Boundary, Timezone, Transition & Replay — Definir a regra de fronteira temporal e fuso horário oficial para a virada do ciclo diário, o comportamento para sessões ativas durante a transição, a política de replay após conclusão e as regras para partidas parcialmente iniciadas].
-- **FR-014**: O sistema DEVE preservar localmente no dispositivo do usuário o estado da partida e os dados necessários para a experiência do ciclo ativo.
-- **FR-015**: [NEEDS CLARIFICATION: Streak Rules & Retention Policy — Definir as regras funcionais de manutenção, tolerância e quebra de sequência de dias consecutivos jogados (streaks), incluindo a relação entre a virada do ciclo e a continuidade da contagem].
-- **FR-016**: O sistema DEVE manter indicadores pessoais básicos acumulados no dispositivo (ex.: total de partidas jogadas, taxa de sucesso e sequência de dias).
+- **FR-013**: O ciclo diário do desafio renova-se à meia-noite (00:00:00) pelo Horário Oficial de Brasília (UTC-3), garantindo que todos os usuários compartilhem simultaneamente o mesmo enigma do calendário e eliminando assimetrias de spoilers entre fusos horários.
+- **FR-014**: O sistema DEVE preservar localmente o estado da partida e garantir a conclusão graciosa de sessões ativas que atravessem a virada da meia-noite ou permaneçam abertas por múltiplos dias, atribuindo a conclusão ao ciclo do desafio em que a partida foi iniciada (ex.: partida do Dia A iniciada às 23:58 e concluída às 00:03 do Dia B pontua para o Dia A); após a conclusão e exibição da tela pós-jogo, o novo desafio do ciclo corrente é disponibilizado para jogo e cômputo sem duplicidade. Sessões mantidas abertas por múltiplos dias (ex.: iniciada no Dia 10 e concluída no Dia 12) pontuam exclusivamente para a data de origem (Dia 10) e não recuperam dias intermediários (Dia 11) nem adiantam o dia atual (Dia 12), operando sem descartes punitivos ou timeouts arbitrários no cliente. Uma vez concluído o desafio de um determinado ciclo, a rejogabilidade daquele ciclo é bloqueada para proteger a integridade dos dados estatísticos, mantendo acessível a tela pós-jogo para consulta e compartilhamento.
+  - *Nota de Política de Produto*: `[FUTURE PRODUCT POLICY / STAKEHOLDER DECISION]` Conforme decisão deliberada do Product Owner, esta regra de preservação e atribuição ao ciclo de origem (Opção A) regerá o free tier permanente e eventuais futuros planos pagos da plataforma; a aplicação de descarte de sessão (Opção C) fica reservada para eventual governança de outras modalidades ou planos futuros não contemplados nessas condições, sem impacto ou implementação condicional de planos no MVP.
+- **FR-015**: O sistema DEVE computar a sequência de dias jogados (*streak*) com base na conclusão efetiva da partida no ciclo diário oficial (vitória ou derrota contam para a constância do hábito); se o usuário não concluir o desafio em um dia civil oficial (00:00:00 às 23:59:59 UTC-3), a sequência atual de dias (*current streak*) é zerada ao iniciar a próxima partida, mantendo-se sempre preservada a maior sequência histórica alcançada (*max streak*).
+- **FR-016**: O sistema DEVE manter e exibir indicadores pessoais básicos acumulados no dispositivo (total de partidas concluídas, taxa de vitórias, distribuição de tentativas em vitórias, sequência atual de dias e sequência máxima histórica), sem notificações invasivas de urgência ou mecanismos coercitivos de retenção.
 
 #### Compartilhamento e Interação Social
 - **FR-017**: O sistema DEVE fornecer funcionalidade de compartilhamento voluntário na tela pós-jogo, ativada exclusivamente por iniciativa do usuário.
@@ -194,7 +206,7 @@ Como usuário interessado na proposta do Cruzadas.online, quero ter a oportunida
 
 - **Desafio Diário (Daily Challenge)**:
   Representa a unidade editorial de jogo vinculada a um ciclo periódico.
-  *Atributos conceituais*: Identificador do ciclo/data, termo secreto da adivinhação, pistas estruturadas de auxílio, texto de contextualização formativa, citação da fonte adequada e categoria temática documental.
+  *Atributos conceituais*: Identificador do ciclo/data, termo secreto da adivinhação, quantidade de letras do termo, pista temática inicial, texto de contextualização formativa pós-jogo, citação da fonte adequada e categoria temática documental.
 
 - **Sessão de Partida Local (Game Session State)**:
   Representa o estado transitório e final de uma partida jogada em um dispositivo específico.
@@ -202,7 +214,7 @@ Como usuário interessado na proposta do Cruzadas.online, quero ter a oportunida
 
 - **Indicadores Pessoais do Jogador (Player Local Profile)**:
   Representa as estatísticas de hábito acumuladas localmente no dispositivo sem vínculo com conta centralizada.
-  *Atributos conceituais*: Total de desafios jogados, taxa de sucesso, sequência atual de dias consecutivos jogados (*current streak*) e maior sequência histórica (*max streak*).
+  *Atributos conceituais*: Total de partidas jogadas, total de vitórias, taxa de sucesso percentual, distribuição de vitórias por tentativa, sequência atual de dias consecutivos jogados (*current streak*), maior sequência histórica (*max streak*) e data do último ciclo concluído.
 
 - **Registro de Manifestação de Interesse (Interest Signal)**:
   Representa a intenção voluntária expressa pelo usuário sobre continuidade, apoio ou novas funcionalidades.
@@ -310,16 +322,9 @@ Auditoria de conformidade desta especificação contra a [Constituição do Cruz
 
 ## Unresolved Items & Future Clarifications
 
-Esta especificação identifica exatamente **3 itens críticos** que dependem de refinamento na etapa subsequente (`/speckit-clarify`):
+Todas as ambiguidades funcionais principais e residuais foram formalmente resolvidas com o Product Owner nas sessões de clarificação:
+- **Mecânica Canônica e Vocabulário (`FR-006`, `FR-007`, `FR-008`)**: Adivinhação em 6 tentativas com pista temática inicial; cômputo posicional estrito para letras repetidas (prioridade exata, consumindo repetições e marcando excedentes como ausentes); equivalência ortográfica transparente na digitação (A-Z básico normalizado, com grafia editorial correta na revelação); vocabulário de termos únicos sem espaços/hífens aceitando palavras comuns e nomes próprios bíblicos/católicos relevantes (Option A).
+- **Fronteira Temporal e Virada de Ciclo (`FR-013`, `FR-014`)**: Horário de Brasília (00:00 UTC-3) como fuso oficial unificado; aplicação incondicional da Opção A para todo o MVP (conclusão de partida que atravessa a meia-noite ou sessão prolongada por múltiplos dias pertence ao ciclo do desafio que foi iniciado e libera o desafio do ciclo corrente sem timeouts arbitrários); registro da decisão diretiva do PO `[FUTURE PRODUCT POLICY / STAKEHOLDER DECISION]` para a coexistência futura da Opção A (free tier permanente e planos pagos) e Opção C (outras modalidades futuras); bloqueio de rejogabilidade no mesmo ciclo.
+- **Regras de Sequência de Dias (`FR-015`, `FR-016`)**: Conclusão de partida (vitória ou derrota) pontua para a constância do hábito; quebra de sequência em caso de dia civil ausente preservando recorde histórico; sem dark patterns ou punições coercitivas (Option A).
 
-1. **[NEEDS CLARIFICATION: Core Game Mechanics]**
-   - *O que precisa ser determinado*: Estrutura canônica da tentativa; tamanho fixo ou variável do termo; número/limite de tentativas se houver; condições de vitória e encerramento; modelo de feedback acessível ao jogador; tratamento de letras repetidas; política de pistas progressivas; vocabulário aceito e regras de acentuação/cedilha.
-   - *Impacto*: Determina a dinâmica de resolução, a curva de dificuldade e o esforço cognitivo do público sênior.
-
-2. **[NEEDS CLARIFICATION: Daily Cycle Boundary, Timezone, Transition & Replay]**
-   - *O que precisa ser determinado*: Referência temporal oficial (ex: horário de Brasília UTC-3 vs. relógio local do usuário); momento de virada do ciclo; comportamento para sessões ativas no instante da transição; política de replay após conclusão (permitido sem alterar estatísticas vs. bloqueio total); e tratamento para partidas parcialmente iniciadas.
-   - *Impacto*: Define a sincronia da experiência compartilhada e a integridade do estado da partida.
-
-3. **[NEEDS CLARIFICATION: Streak Rules & Retention Policy]**
-   - *O que precisa ser determinado*: Regras funcionais de manutenção, tolerância ou quebra da sequência de dias consecutivos jogados (*streaks*); se a ausência de um único dia zera a contagem imediatamente ou se há tolerância/período de graça; e como a virada do ciclo temporal afeta a continuidade da sequência.
-   - *Impacto*: Afeta o sentimento de realização do usuário, o hábito diário e o risco de desengajamento.
+Nenhum marcador `[NEEDS CLARIFICATION]` pendente permanece na especificação funcional.

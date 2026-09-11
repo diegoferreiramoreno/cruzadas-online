@@ -1,7 +1,7 @@
 # Specification Quality Checklist: Desafio Diário Web-First (Shape 1)
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-09-10 (revisado pós-PO Gate)
+**Created**: 2026-09-10 (revisado pós-Clarify Residual)
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -13,9 +13,9 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain *(3 itens críticos delimitados para a etapa /speckit-clarify)*
-- [ ] Requirements are testable and unambiguous *(pendente de clarificação para mecânica canônica, virada de ciclo e streaks)*
-- [x] Success criteria are measurable *(critérios ativos são verificáveis; performance técnica foi deferida para o Plan sem métricas arbitrárias na spec)*
+- [x] No [NEEDS CLARIFICATION] markers remain *(todas as clarificações principais e residuais foram formalmente deliberadas e integradas)*
+- [x] Requirements are testable and unambiguous *(regras canônicas de mecânica, letras repetidas, normalização ortográfica, vocabulário, virada de ciclo e streaks plenamente especificadas)*
+- [x] Success criteria are measurable *(critérios funcionais e de experimento ativos são verificáveis; performance técnica deferida ao Plan)*
 - [x] Success criteria are technology-agnostic (no implementation details)
 - [x] All acceptance scenarios are defined
 - [x] Edge cases are identified
@@ -24,16 +24,18 @@
 
 ## Feature Readiness
 
-- [ ] All functional requirements have clear acceptance criteria *(os requisitos dependentes das 3 clarificações serão completados após o /speckit-clarify)*
+- [x] All functional requirements have clear acceptance criteria
 - [x] User scenarios cover primary flows
 - [x] Feature meets measurable outcomes defined in Success Criteria
 - [x] No implementation details leak into specification
 
 ## Notes
 
-- A especificação foi purificada para não antecipar regras específicas de mecânica de jogo (Wordle/Termo), regras de virada/replay, suporte offline ou métricas arbitrárias de performance e dimensões de touch target.
-- Exatamente 3 marcadores `[NEEDS CLARIFICATION]` foram mantidos e ampliados para a etapa `/speckit-clarify`:
-  1. `Core Game Mechanics` (estrutura de tentativa, tamanho, limite de tentativas, feedback, pistas, vocabulário, acentos);
-  2. `Daily Cycle Boundary, Timezone, Transition & Replay` (fuso oficial, virada, sessão ativa, replay);
-  3. `Streak Rules & Retention Policy` (regras de quebra, manutenção e tolerância de sequências).
-- Todos os princípios da Constituição v1.0.0 foram auditados com rigor epistemológico, distinguindo conformidade no nível de especificação das validações técnicas que pertencem ao Plan e Implementation.
+- Todas as decisões de clarificação foram formalmente integradas:
+  1. `Core Game Mechanics`: Adivinhação em até 6 tentativas com pista temática inicial e feedback multimodal;
+  2. `Letras Repetidas`: Cômputo posicional estrito com prioridade para posições corretas e marcação de excedentes como ausentes (ex.: palavra secreta MARIA vs. tentativa ARARA);
+  3. `Normalização Ortográfica`: Digitação normalizada A-Z (ACAO = AÇÃO) preservando a grafia editorial acentuada na revelação;
+  4. `Vocabulário Aceito`: Termo único sem espaços ou hífens, aceitando léxico comum e nomes próprios bíblicos/católicos relevantes (MARIA, PEDRO, JESUS, BENTO);
+  5. `Virada de Ciclo e Atribuição Temporal`: Meia-noite de Brasília (00:00 UTC-3); aplicação universal da Opção A no MVP (conclusão atribuída ao ciclo de início mesmo através da meia-noite ou em sessões prolongadas por múltiplos dias, liberando o novo ciclo sem duplicidade nem timeouts arbitrários); registro de `[FUTURE PRODUCT POLICY / STAKEHOLDER DECISION]` reservando a Opção A para free tier e planos pagos e a Opção C para outras modalidades futuras;
+  6. `Streaks`: Conclusão diária por hábito sem dark patterns ou punições coercitivas.
+- Nenhuma tecnologia ou arquitetura técnica foi antecipada. A especificação encontra-se completa e pronta para o Planejamento Técnico (`/speckit-plan`).
