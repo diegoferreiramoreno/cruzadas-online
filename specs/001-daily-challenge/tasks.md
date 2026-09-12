@@ -176,14 +176,15 @@
 
 ## Phase 8: Polish & Cross-Cutting Concerns
 
-**Purpose**: Auditoria automatizada de acessibilidade WCAG 2.2 AA no axe complementada por testes manuais, responsividade, dimensionamento de texto a 200%, portão editorial de release humano, validação dos cenários de homologação e documentação.
+**Purpose**: Auditoria automatizada de acessibilidade WCAG 2.2 AA no axe complementada por testes manuais, responsividade, dimensionamento de texto a 200%, portão editorial de release humano, verificação de Core Web Vitals e bundle size em build de produção, validação dos cenários de homologação e documentação.
 
 - [ ] T062 [P] Implement automated accessibility tests with `axe-core` in `tests/a11y/accessibility.test.tsx` asserting zero automated accessibility violations detectable by axe for the configured WCAG 2.2 AA rules, complemented by manual Quickstart accessibility checks across Board, Virtual Keyboard, Modals, and Alerts
 - [ ] T063 [P] Verify touch target sizes (>= 44/48px) and focus indicators in `src/index.css` and all interactive components
 - [ ] T064 Verify 200% zoom text scaling and responsive viewport behavior in `src/index.css` ensuring no text truncation or overlapping elements
 - [ ] T065 [P] Create application documentation in `README.md` documenting architecture, 2026 toolchain scripts, Cloudflare Workers Static Assets deployment, and editorial guidelines
 - [ ] T066 Enforce human editorial release gate in `scripts/validate-challenges.ts` and release verification: ensure content/challenges/ contains at least one publishable challenge with editorialStatus "Verified" or "Published" covering the target release cycle with human-reviewed factual sources, stop release and report gate pending if only "Draft" or zero challenges exist (rejecting autonomous agent promotion of Drafts), and confirm test fixtures under tests/fixtures/challenges/ are never used to satisfy the gate
-- [ ] T067 Execute end-to-end verification of Quickstart validation scenarios A through E in `specs/001-daily-challenge/quickstart.md` (`npm run typecheck`, `npm run lint`, `npm run test`, `npm run validate:content`, `npm run generate:registry`, and `npm run build`)
+- [ ] T067 Verify performance and Core Web Vitals lab baselines on production build (dist/client/) under mobile network and CPU throttling: measure and record client bundle size baseline, lab LCP (target <= 2.5s), lab INP (target <= 200ms), and lab CLS (target <= 0.1), distinguishing pre-release lab measurements from production field p75 metrics (which require active traffic to observe), and documenting any significant deviations before release
+- [ ] T068 Execute end-to-end verification of Quickstart validation scenarios A through E in `specs/001-daily-challenge/quickstart.md` (`npm run typecheck`, `npm run lint`, `npm run test`, `npm run validate:content`, `npm run generate:registry`, and `npm run build`)
 
 ---
 
@@ -208,7 +209,7 @@ Phase 3: US1 (P1)  Phase 4: US2 (P2)  Phase 5: US3 (P2)  Phase 6: US4 (P3)
                    Phase 7: Telemetry & D1 (T058-T061)
                               │
                               ▼
-                   Phase 8: Polish & E2E (T062-T067)
+                   Phase 8: Polish & E2E (T062-T068)
 ```
 
 - **Setup (Phase 1)**: Can start immediately.
@@ -270,7 +271,7 @@ Task T038: "Implement HowToPlayModal component in src/components/modals/HowToPla
 4. Add **User Story 3 (P2)** → Organic community distribution with spoiler-free WhatsApp sharing and callback.
 5. Add **User Story 4 (P3)** → Product validation signal for community interest with callback.
 6. Add **Telemetry (Phase 7)** → Edge persistence of aggregated metrics in Cloudflare D1 with strict validation, wiring all 7 events in one cross-cutting task.
-7. Run **Polish & Accessibility (Phase 8)** → WCAG 2.2 AA automated audit on axe + manual Quickstart checks, 200% zoom verification, human editorial release gate verification, and full build check.
+7. Run **Polish & Accessibility (Phase 8)** → WCAG 2.2 AA automated audit on axe + manual Quickstart checks, 200% zoom verification, human editorial release gate verification, performance/Web Vitals lab baseline measurement, and full build check.
 
 ---
 
