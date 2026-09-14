@@ -1,0 +1,21 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: cruzadas-online-dev
+    ports:
+      - "5180:5173"
+    environment:
+      - NODE_ENV=development
+      - VITE_USE_POLLING=true
+      - INCLUDE_DRAFTS=true
+    volumes:
+      - .:/app
+      - node_modules:/app/node_modules
+      - wrangler_state:/app/.wrangler
+    restart: unless-stopped
+
+volumes:
+  node_modules:
+  wrangler_state:
