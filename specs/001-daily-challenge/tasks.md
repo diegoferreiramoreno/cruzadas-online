@@ -282,3 +282,9 @@ Task T038: "Implement HowToPlayModal component in src/components/modals/HowToPla
 - User story tasks include `[US1]`, `[US2]`, `[US3]`, or `[US4]`.
 - Polish tasks have no story tag.
 - Verbatim constraints from `data-model.md` and contracts are quoted in task descriptions.
+
+---
+
+## Phase 9: Convergence
+
+- [ ] T069 Fix Node.js/JSDOM test environment detection order in `src/services/vocabularyService.ts` to load length-partitioned vocabulary files from `public/data/vocabulary/${wordLength}.txt` via filesystem before browser `fetch` fallback, restoring 100% test pass rate across `tests/unit/engine/vocabulary.test.ts`, `tests/integration/GameFlow.test.tsx`, and `tests/integration/TelemetryIntegration.test.tsx` per Constitution XVII, Constitution XX (DoD 4), FR-006, and US1/AC3 (partial)
