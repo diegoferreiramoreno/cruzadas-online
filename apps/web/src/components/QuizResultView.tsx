@@ -8,6 +8,21 @@ interface QuizResultViewProps {
   onOpenDonation?: () => void;
 }
 
+const getDifficultyClass = (level?: string) => {
+  switch (level?.toLowerCase()) {
+    case 'iniciante':
+      return 'iniciante';
+    case 'intermediário':
+    case 'intermediario':
+      return 'intermediario';
+    case 'avançado':
+    case 'avancado':
+      return 'avancado';
+    default:
+      return 'iniciante';
+  }
+};
+
 export const QuizResultView: React.FC<QuizResultViewProps> = ({
   result,
   onPlayAgain,
@@ -31,7 +46,17 @@ export const QuizResultView: React.FC<QuizResultViewProps> = ({
     <div className="result-container" role="region" aria-label="Resultado da Partida">
       {/* Score Summary */}
       <section className="result-hero">
-        <p className="result-badge">Partida Concluída</p>
+        <div style={{ display: 'flex', gap: '0.6rem', justifyContent: 'center', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+          <p className="result-badge" style={{ margin: 0 }}>Partida Concluída</p>
+          {result.difficultyLevel && (
+            <span className={`badge-difficulty ${getDifficultyClass(result.difficultyLevel)}`}>
+              Nível: {result.difficultyLevel}
+            </span>
+          )}
+        </div>
+        <h2 style={{ fontSize: '1.25rem', color: 'var(--color-navy)', marginBottom: '0.75rem', fontFamily: 'var(--font-serif)', fontWeight: 600 }}>
+          {result.quizTitle}
+        </h2>
         <h1 className="result-score-number">
           {Math.round(result.scorePercentage)}
           <span>%</span>

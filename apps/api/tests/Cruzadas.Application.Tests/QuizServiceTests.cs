@@ -120,6 +120,7 @@ public class QuizServiceTests
         Assert.Equal(quiz.Id, response.QuizId);
         Assert.Equal(2, response.TotalQuestions);
         Assert.Equal(2, response.Questions.Count);
+        Assert.Equal(quiz.DifficultyLevel, response.DifficultyLevel);
 
         // Verify that options are returned without correct flags
         foreach (var q in response.Questions)
@@ -165,6 +166,7 @@ public class QuizServiceTests
         Assert.Equal(2, result.TotalQuestions);
         Assert.Equal(1, result.CorrectAnswersCount);
         Assert.Equal(50.00m, result.ScorePercentage);
+        Assert.Equal(quiz.DifficultyLevel, result.DifficultyLevel);
         Assert.Equal(2, result.Questions.Count);
 
         var review1 = result.Questions.First(q => q.QuestionId == q1.Id);

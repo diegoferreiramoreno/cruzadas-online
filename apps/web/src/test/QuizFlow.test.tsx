@@ -44,6 +44,7 @@ describe('Fluxo Completo do Quiz Católico no Cruzadas.online', () => {
     quizId: 'quiz-1',
     quizTitle: 'Quiz Católico — Fundamentos da Fé',
     quizSlug: 'fundamentos-da-fe',
+    difficultyLevel: 'Iniciante',
     totalQuestions: 2,
     questions: [
       {
@@ -71,6 +72,7 @@ describe('Fluxo Completo do Quiz Católico no Cruzadas.online', () => {
     attemptId: 'att-1234',
     quizId: 'quiz-1',
     quizTitle: 'Quiz Católico — Fundamentos da Fé',
+    difficultyLevel: 'Iniciante',
     totalQuestions: 2,
     correctAnswersCount: 2,
     scorePercentage: 100,
@@ -148,6 +150,7 @@ describe('Fluxo Completo do Quiz Católico no Cruzadas.online', () => {
     // 3. Primeira pergunta
     await waitFor(() => {
       expect(screen.getByText('Questão 1 de 2')).toBeInTheDocument();
+      expect(screen.getByText('Nível: Iniciante')).toBeInTheDocument();
       expect(screen.getByText('Quantos são os sacramentos da Igreja Católica?')).toBeInTheDocument();
     });
 
@@ -176,6 +179,7 @@ describe('Fluxo Completo do Quiz Católico no Cruzadas.online', () => {
     // 5. Tela de resultado
     await waitFor(() => {
       expect(screen.getByText('Partida Concluída')).toBeInTheDocument();
+      expect(screen.getByText('Nível: Iniciante')).toBeInTheDocument();
       expect(screen.getByText('100')).toBeInTheDocument();
       expect(screen.getByText(/excelente domínio!/i)).toBeInTheDocument();
       expect(screen.getByText('Revisão Detalhada das Respostas')).toBeInTheDocument();

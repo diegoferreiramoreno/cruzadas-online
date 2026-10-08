@@ -25,7 +25,8 @@ public record QuizDetailDto(
     string Title,
     string Slug,
     string Description,
-    int QuestionsPerAttempt);
+    int QuestionsPerAttempt,
+    string DifficultyLevel = "Iniciante");
 
 public record AnswerOptionDto(
     Guid Id,
@@ -44,7 +45,8 @@ public record StartAttemptResponseDto(
     string QuizTitle,
     string QuizSlug,
     int TotalQuestions,
-    IReadOnlyList<QuizQuestionDto> Questions);
+    IReadOnlyList<QuizQuestionDto> Questions,
+    string DifficultyLevel = "Iniciante");
 
 public record SubmitAnswersRequestDto(
     Dictionary<Guid, Guid> Answers);
@@ -69,4 +71,5 @@ public record QuizResultDto(
     decimal ScorePercentage,
     DateTimeOffset StartedAt,
     DateTimeOffset CompletedAt,
-    IReadOnlyList<QuestionReviewDto> Questions);
+    IReadOnlyList<QuestionReviewDto> Questions,
+    string DifficultyLevel = "Iniciante");

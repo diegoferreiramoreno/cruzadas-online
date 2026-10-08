@@ -210,6 +210,7 @@ export const App: React.FC = () => {
           {(viewMode === 'playing' || viewMode === 'submitting') && activeAttempt && (
             <QuizPlay
               quizTitle={activeAttempt.quizTitle}
+              difficultyLevel={activeAttempt.difficultyLevel}
               totalQuestions={activeAttempt.totalQuestions}
               questions={activeAttempt.questions}
               onComplete={handleCompleteQuiz}

@@ -26,6 +26,7 @@ export interface QuizDetail {
   slug: string;
   description: string;
   questionsPerAttempt: number;
+  difficultyLevel?: string;
 }
 
 export interface AnswerOption {
@@ -48,6 +49,7 @@ export interface StartAttemptResponse {
   quizSlug: string;
   totalQuestions: number;
   questions: QuizQuestion[];
+  difficultyLevel?: string;
 }
 
 export interface SubmitAnswersRequest {
@@ -76,4 +78,5 @@ export interface QuizResult {
   startedAt: string;
   completedAt: string;
   questions: QuestionReview[];
+  difficultyLevel?: string;
 }

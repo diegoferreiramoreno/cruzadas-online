@@ -158,7 +158,8 @@ public class QuizService : IQuizService
             Title: quiz.Title,
             Slug: quiz.Slug,
             Description: quiz.Description,
-            QuestionsPerAttempt: quiz.QuestionsPerAttempt);
+            QuestionsPerAttempt: quiz.QuestionsPerAttempt,
+            DifficultyLevel: quiz.DifficultyLevel);
     }
 
     public async Task<StartAttemptResponseDto> StartAttemptAsync(string slug, CancellationToken cancellationToken = default)
@@ -224,7 +225,8 @@ public class QuizService : IQuizService
             QuizTitle: quiz.Title,
             QuizSlug: quiz.Slug,
             TotalQuestions: attempt.TotalQuestions,
-            Questions: questionDtos);
+            Questions: questionDtos,
+            DifficultyLevel: quiz.DifficultyLevel);
     }
 
     public async Task<QuizResultDto> CompleteAttemptAsync(
@@ -375,6 +377,7 @@ public class QuizService : IQuizService
             ScorePercentage: attempt.ScorePercentage,
             StartedAt: attempt.StartedAt,
             CompletedAt: attempt.CompletedAt ?? now,
-            Questions: reviews);
+            Questions: reviews,
+            DifficultyLevel: quiz.DifficultyLevel);
     }
 }

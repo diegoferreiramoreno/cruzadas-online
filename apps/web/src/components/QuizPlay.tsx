@@ -8,7 +8,23 @@ interface QuizPlayProps {
   onComplete: (answers: Record<string, string>) => void;
   onQuit: () => void;
   isSubmitting: boolean;
+  difficultyLevel?: string;
 }
+
+const getDifficultyClass = (level?: string) => {
+  switch (level?.toLowerCase()) {
+    case 'iniciante':
+      return 'iniciante';
+    case 'intermediário':
+    case 'intermediario':
+      return 'intermediario';
+    case 'avançado':
+    case 'avancado':
+      return 'avancado';
+    default:
+      return 'iniciante';
+  }
+};
 
 export const QuizPlay: React.FC<QuizPlayProps> = ({
   quizTitle,
@@ -17,6 +33,7 @@ export const QuizPlay: React.FC<QuizPlayProps> = ({
   onComplete,
   onQuit,
   isSubmitting,
+  difficultyLevel,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState<Record<string, string>>({});
@@ -78,19 +95,25 @@ export const QuizPlay: React.FC<QuizPlayProps> = ({
         {/* Top bar */}
         <div className="quiz-header-bar">
           <div>
-            <span
-              style={{
-                display: 'block',
-                fontSize: '0.8rem',
-                color: 'var(--color-gold-light)',
-                fontWeight: 600,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                marginBottom: '0.2rem',
-              }}
-            >
-              {quizTitle}
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+              <span
+                style={{
+                  display: 'inline-block',
+                  fontSize: '0.85rem',
+                  color: 'var(--color-gold-light)',
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                }}
+              >
+                {quizTitle}
+              </span>
+              {difficultyLevel && (
+                <span className={`badge-difficulty ${getDifficultyClass(difficultyLevel)}`}>
+                  Nível: {difficultyLevel}
+                </span>
+              )}
+            </div>
             <span className="quiz-progress-text">
               Questão {currentIndex + 1} de {totalQuestions}
             </span>
